@@ -1,5 +1,9 @@
-# Fake Title
-## Hi there, I have finished the repository test of updating files via Github desktop.
-- list 1
-- list 2
-- list 3
+Demo for Nutrition Evaluation
+======
+Create Database
+----
+to be continue...     
+
+Nutrition Image Recognition
+----
+We use aipOcr of Baidu to recognize nutrition descriptions in images, and we can only recongize image with normal table so far, so it still needs to develop.
