@@ -1,12 +1,26 @@
-Demo for Nutrition Evaluation
-======
-Create Database
-----
-to be continue...     
+Nutrition Evaluation System 1.0
+=====     
+使用python 3进行开发，可能需要安装的库：
 
-Nutrition Image Recognition
-----
-We use aipOcr of Baidu to recognize nutrition descriptions in images, and we can only recongize image with normal table so far, so it still needs to develop.
-
-- pip install aip
 - pip install baidu_aip
+- pip install flask
+- pip install re
+
+使用flask的路由接口，在服务器（本机）上运行前端界面，根目录为[https://127.0.0.1:5000/](https://127.0.0.1:5000/);
+
+用户输入界面为[https://127.0.0.1:5000/input](https://127.0.0.1:5000/input), （默认用户拍照的营养成分表已上传到服务器目录）；
+
+流程：用户在界面输入年龄性别等信息，并输入营养成分表照片的所在路径，提交后经过处理返回给用户营养成分的建议。
+
+建立营养成分数据库
+-----
+...
+
+营养成分表识别并比较
+----
+调用了百度云的通用文字识别OCR接口。      
+将识别后的结果和标准营养成分比较。
+
+将识别结果返回
+----
+基于B/S架构，界面客户端使用html开发，使用flask的接口获取用户提交表单的数据，并传给后端的main.py进行处理，处理后的结果用render_template以网页形式显示给用户。
