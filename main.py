@@ -18,7 +18,7 @@ stdnutridata = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 # Default setting:
 # 年龄性别体重让用户输入
-AGE = 20
+AGE = 22
 GEND = 0
 WEIGHT = 500
 FILEPATH = 'img/2.jpg'
@@ -59,7 +59,7 @@ def init_standard_table(age, gender):
     
     return
         
-
+# 将用户摄入的营养和标准对比，给出建议
 def cmp_nutrition(f):
     for index in range(len(nutrilist)):
         if nutridata[index]!=-1:
@@ -72,7 +72,7 @@ def cmp_nutrition(f):
                 f.write('<center><h3>'+str(nutrilistcn[index])+'含量适中'+'</h3></center>'+'\n')
             #print(nutridata[index])
     return
-
+# 将营养建议写入html并返回给用户
 def write_html():
 	f = open("templates/result.html","w",encoding="utf-8")
 	message1 = """
@@ -94,7 +94,7 @@ def write_html():
 	f.close()
 
 
-
+# 根据用户输入的信息，初始化营养表，识别用户照片
 def init_and_ocr(age=AGE, gender=GEND, weight=WEIGHT, filepath=FILEPATH):
 
 	aipOcr = AipOcr(APP_ID, API_KEY, SECRET_KEY)
@@ -106,7 +106,7 @@ def init_and_ocr(age=AGE, gender=GEND, weight=WEIGHT, filepath=FILEPATH):
 	#stdtable = read_nutrition(resultstr,WEIGHT)
 	init_standard_table(age, gender)
 
-
+# 使用flask路由接口的url，实现前后端的交互
 def show_result():
 	app = Flask(__name__)
 
