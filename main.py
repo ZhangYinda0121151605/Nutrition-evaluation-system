@@ -2,6 +2,8 @@
 
 from aip import AipOcr
 import re
+from flask import Flask, render_template, request 
+
 APP_ID = '14358252'
 API_KEY = 'wW74XknvLtD3sXpxDYyE60HM'
 SECRET_KEY = 'DUA8G4ekCbGiLrrTlNFY2v1wyqiEji9O'
@@ -13,6 +15,13 @@ nutristd = [1000, 30, 50, 0, 300, 500, 40, 10, 3, 0.2, 0.4, 0.1, 0.4, 300, 150, 
         
 nutridata = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
 stdnutridata = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+# Default setting:
+# 年龄性别体重让用户输入
+AGE = 20
+GEND = 0
+WEIGHT = 500
+FILEPATH = 'img/2.jpg'
     
 def get_file_content(filePath):
     with open(filePath, 'rb') as fp:
@@ -51,32 +60,99 @@ def init_standard_table(age, gender):
     return
         
 
-def cmp_nutrition():
+def cmp_nutrition(f):
     for index in range(len(nutrilist)):
         if nutridata[index]!=-1:
             disppercent = float(nutridata[index]-stdnutridata[index])/float(stdnutridata[index]+0.001)
             if disppercent>0.4:
-                print('请额外摄入'+nutrilistcn[index]+'高的食物！')
+                f.write('<center><h3>'+'请额外摄入'+str(nutrilistcn[index])+'高的食物！'+'</h3></center>'+'\n')
             elif disppercent<-0.4:
-                print('请减少'+nutrilistcn[index]+'的摄入')
+                f.write('<center><h3>'+'请减少'+str(nutrilistcn[index])+'的摄入'+'</h3></center>'+'\n')
             else:
-                print(nutrilistcn[index]+'含量适中')
+                f.write('<center><h3>'+str(nutrilistcn[index])+'含量适中'+'</h3></center>'+'\n')
             #print(nutridata[index])
     return
 
-#年龄性别体重让用户输入
-age = 20
-gender = 0
-weight = 500
+def write_html():
+	f = open("templates/result.html","w",encoding="utf-8")
+	message1 = """
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<title> Result </title>
+	</head>
+	<body>
+	"""
+	f.write(message1)
+	cmp_nutrition(f)
+	message2 = """
+	</body>
+	</html>
+	"""
+	f.write(message2)
+	f.close()
 
-aipOcr = AipOcr(APP_ID, API_KEY, SECRET_KEY)
-
-result = aipOcr.basicGeneral(get_file_content('6.jpg'))
-resultstr = str(result)
-
-read_nutrition(resultstr,weight)
-#stdtable = read_nutrition(resultstr,weight)
-init_standard_table(age, gender)
-cmp_nutrition()
 
 
+def init_and_ocr(age=AGE, gender=GEND, weight=WEIGHT, filepath=FILEPATH):
+
+	aipOcr = AipOcr(APP_ID, API_KEY, SECRET_KEY)
+
+	result = aipOcr.basicGeneral(get_file_content(filepath))
+	resultstr = str(result)
+
+	read_nutrition(resultstr,weight)
+	#stdtable = read_nutrition(resultstr,WEIGHT)
+	init_standard_table(age, gender)
+
+
+def show_result():
+	app = Flask(__name__)
+
+	@app.route('/')
+	def hello_world():
+		return 'Hello fucking world!'
+
+	@app.route('/input')
+	def index():
+		return render_template('input.html')
+
+	@app.route('/Evaluation', methods = ['GET','POST'])
+	def success():
+		if request.method == 'POST':
+			age = request.form['age']
+			gender = request.form['gender']
+			if gender == "男":
+				gend = 0
+			elif gender == "女":
+				gend = 1
+			else:
+				pass
+			weight = request.form['weight']
+			filepath = request.form['filepath']
+			init_and_ocr(int(age), int(gend), int(weight), filepath)
+			write_html()
+			return render_template('result.html')
+			#return render_template('result.html', age = age, gender = gend, weight = weight, filepath = filepath)
+		else:
+			pass
+	app.run()
+	return
+
+
+if __name__ == "__main__":
+	show_result()
+'''
+	aipOcr = AipOcr(APP_ID, API_KEY, SECRET_KEY)
+
+	result = aipOcr.basicGeneral(get_file_content(FILEPATH))
+	resultstr = str(result)
+
+	read_nutrition(resultstr,WEIGHT)
+	#stdtable = read_nutrition(resultstr,WEIGHT)
+	init_standard_table(AGE, GENDER)
+	
+	write_html()
+'''
+	
