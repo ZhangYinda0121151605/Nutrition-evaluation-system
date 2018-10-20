@@ -34,8 +34,7 @@ def read_nutrition(inputstr, weight):
         if len(nutrishow):
             nutrishow[0] = nutrishow[0].strip(nutrilistcn[index]) #删除文字，保留数字部分
             nutridata[index] = weight*((int(nutrishow[0])))/100
-    return
-
+  
 #乘10修正是因为识别不出来小数点，因此食品营养表上小数点后一位的标准也乘10
 def init_standard_table(age, gender):
 
@@ -57,7 +56,7 @@ def init_standard_table(age, gender):
     stdnutridata[15] = (max(20-0.2*(abs(age-20)),10))*10
     stdnutridata[16] = 12-0.1*(abs(age-40))
     
-    return
+    
         
 # 将用户摄入的营养和标准对比，给出建议
 def cmp_nutrition(f):
@@ -71,7 +70,7 @@ def cmp_nutrition(f):
             else:
                 f.write('<center><h3>'+str(nutrilistcn[index])+'含量适中'+'</h3></center>'+'\n')
             #print(nutridata[index])
-    return
+    
 # 将营养建议写入html并返回给用户
 def write_html():
 	f = open("templates/result.html","w",encoding="utf-8")
@@ -138,7 +137,7 @@ def show_result():
 		else:
 			pass
 	app.run()
-	return
+	
 
 
 if __name__ == "__main__":
